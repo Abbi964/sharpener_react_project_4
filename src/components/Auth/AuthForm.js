@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import classes from './AuthForm.module.css';
-import {createUserWithEmailAndPassword } from 'firebase/auth';
+import {createUserWithEmailAndPassword , signInWithEmailAndPassword } from 'firebase/auth';
 import auth from '../../services/firebase';
 
 const AuthForm = () => {
@@ -30,7 +30,12 @@ const AuthForm = () => {
       const passwordInput = passwordInputRef.current.value
   
       if ( isLogin){
-  
+        setSubmitBtn('Sending request...')
+        let userCredentials = await signInWithEmailAndPassword(auth,emailInput,passwordInput)
+        setSubmitBtn(isLogin ? 'LOGIN' : 'SIGN UP')
+        console.log(userCredentials)
+        emailInputRef.current.value = ''
+        passwordInputRef.current.value = ''
       }
       else{
         setSubmitBtn('Sending request...')
@@ -43,6 +48,7 @@ const AuthForm = () => {
 
     }
     catch(err){
+      console.log(err)
       alert(err.code)
       setSubmitBtn(isLogin ? 'LOGIN' : 'SIGN UP')
     }
